@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+DEFAULT_JVM_OPTS="-Dfile.encoding=UTF-8"
+JVM_OPTS=(${DEFAULT_JVM_OPTS[@]} {{ jvm_opts }})
+
+JAVACMD="java"
+CLASSPATH="{{ solr_jar_path }}/*"
+UNDERTOW_CONF="{{ undertow_conf }}"
+PID_FILE="{{ pid_file }}"
+
+start() {
+	nohup "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" \
+	uy.kohesive.solr.undertow.App "$UNDERTOW_CONF" >/dev/null 2>&1 & 
+	echo $! > "$PID_FILE"
+	pid=`cat "$PID_FILE"`
+	echo "Solr started with pid $pid."
+}
+
+start_fg() {
+	"$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" uy.kohesive.solr.undertow.App "$UNDERTOW_CONF"
+}
+
+stop() {
+	pid=`cat "$PID_FILE"`
+	kill -TERM $pid
+	echo "Solr stopped successfully."
+}
+
+status() {
+	echo "status"
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+
+    fg)
+        start_fg
+        ;;
+
+    stop)
+        stop
+        ;;
+
+    restart)
+        stop
+        start
+        ;;
+
+    status)
+        status
+        ;;
+esac
