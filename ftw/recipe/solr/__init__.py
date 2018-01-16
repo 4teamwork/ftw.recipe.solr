@@ -3,12 +3,9 @@ from fnmatch import fnmatch
 from ftw.recipe.solr.defaults import DEFAULT_OPTIONS
 from jinja2 import Environment, PackageLoader
 from setuptools import archive_util
+from shutil import copyfile
 from zc.buildout.download import Download
-from zipfile import ZIP_DEFLATED
-from zipfile import ZipFile
 import os
-import shutil
-import tempfile
 
 
 class Recipe(object):
@@ -25,7 +22,7 @@ class Recipe(object):
         options.setdefault('destination', os.path.join(
             buildout['buildout']['parts-directory'], self.name))
 
-        options.setdefault('var-dir', os.path.join(
+        options.setdefault('home-dir', os.path.join(
             buildout['buildout']['directory'], 'var', self.name))
 
         options.setdefault('log-dir', os.path.join(
@@ -36,33 +33,25 @@ class Recipe(object):
 
         self.cores = options.get('cores', '').split()
 
-        self.solr_version = options['solr-url'].split('/')[-1][5:][:-4]
-        self.solr_major_version = self.solr_version.split('.')[0]
-
-        self.is_solrcloud = True if (options['zk-host'] or
-                                     options['zk-run'] == 'true') else False
-
-        options.setdefault('pid-file', os.path.join(options['var-dir'],
+        options.setdefault('pid-file', os.path.join(options['home-dir'],
                            '{}.pid'.format(name)))
-        options.setdefault('jvm-opts', '')
-
-        options.setdefault('conf-source', os.path.join(
-            os.path.dirname(__file__), 'conf', self.solr_major_version))
 
         self.env = Environment(
             loader=PackageLoader('ftw.recipe.solr', 'templates'),
             trim_blocks=True,
         )
 
-    def download_and_extract(self, url, md5sum, dest, extract_filter, strip_dirs=1):
+    def download_and_extract(self, url, md5sum, dest, extract_filter='*', strip_dirs=1):
         path, is_temp = Download(self.buildout['buildout'])(url, md5sum)
         files = []
 
         def progress_filter(src, dst):
             if fnmatch(src, extract_filter):
-                files.append(os.path.join(dest, os.path.join(
-                    *os.path.normpath(src).split(os.sep)[strip_dirs:])))
-                return files[-1]
+                stripped = os.path.normpath(src).split(os.sep)[strip_dirs:]
+                if stripped:
+                    files.append(os.path.join(dest, os.path.join(
+                        *stripped)))
+                    return files[-1]
 
         archive_util.unpack_archive(path, dest, progress_filter)
         return files
@@ -72,69 +61,27 @@ class Recipe(object):
 
         destination = self._create_dir(self.options.get('destination'), parts)
 
-        # Download and extract Solr Undertow
-        self.download_and_extract(
-            self.options['undertow-url'],
-            self.options['undertow-md5sum'],
-            os.path.join(destination, 'lib'),
-            '*/lib/*',
-            strip_dirs=2
-        )
-        parts.append(os.path.join(destination, 'lib'))
-
-        # Download Solr distribution and create WAR file
-        tempdir = tempfile.mkdtemp()
+        # Download and extract Solr distribution
         parts.extend(self.download_and_extract(
-            self.options['solr-url'],
-            self.options['solr-md5sum'],
-            tempdir,
-            '*/server/solr-webapp/webapp/*',
-            strip_dirs=4
+            self.options['url'],
+            self.options['md5sum'],
+            destination,
         ))
-        with ZipFile(os.path.join(destination, 'solr.war'), 'w',
-                     ZIP_DEFLATED) as solr_war:
-            for dirpath, dirnames, filenames in os.walk(tempdir):
-                for filename in filenames:
-                    solr_war.write(
-                        os.path.join(dirpath, filename),
-                        os.path.join(os.path.relpath(dirpath, tempdir),
-                                     filename))
-        shutil.rmtree(tempdir)
 
         # Create Solr data directories
-        var_dir = self._create_dir(self.options.get('var-dir'))
-        home_dir = self._create_dir(os.path.join(var_dir, 'home'))
-        tmp_dir = self._create_dir(os.path.join(var_dir, 'tmp'))
+        home_dir = self._create_dir(self.options.get('home-dir'))
         log_dir = self._create_dir(self.options.get('log-dir'))
 
         # Create solr.xml
         parts.append(self._create_from_template(
             'solr.xml.tmpl',
             os.path.join(home_dir, 'solr.xml'),
-            port=self.options['port'],
-            host_context=self.options['host_context'],
         ))
 
         # Create zoo.cfg
         parts.append(self._create_from_template(
             'zoo.cfg.tmpl',
             os.path.join(home_dir, 'zoo.cfg'),
-            zk_data_dir=os.path.join(var_dir, 'zoo_data'),
-            zk_port=self.options['zk-port']
-        ))
-
-        # Create undertow.conf
-        parts.append(self._create_from_template(
-            'undertow.conf.tmpl',
-            os.path.join(destination, 'undertow.conf'),
-            zk_run=self.options['zk-run'],
-            zk_host=self.options['zk-host'],
-            http_cluster_port=self.options['port'],
-            solr_home=home_dir,
-            solr_logs=log_dir,
-            temp_dir=tmp_dir,
-            solr_version=self.solr_version,
-            solr_war_file=os.path.join(destination, 'solr.war')
         ))
 
         # Create cores
@@ -153,19 +100,12 @@ class Recipe(object):
             if not os.path.isdir(core_conf_dir):
                 os.makedirs(core_conf_dir)
 
-            parts.append(self._create_from_template(
-                'solrconfig.xml.tmpl',
-                os.path.join(core_conf_dir, 'solrconfig.xml'),
-                lucene_match_version=self.solr_version,
-            ))
-
-            if not os.path.exists(os.path.join(core_conf_dir,
-                                               'managed-schema')):
-                self._create_from_template(
-                    'managed-schema.tmpl',
-                    os.path.join(core_conf_dir, 'managed-schema'),
-                    unique_key=self.options['unique-key'],
-                )
+            conf_src = self._core_option(core, 'conf')
+            if not conf_src:
+                conf_src = os.path.join(os.path.dirname(__file__), 'conf')
+            parts.extend(
+                self._copy_from_dir(conf_src, core_conf_dir)
+            )
 
         # Create startup script
         bin_dir = self.options['bin-dir']
@@ -173,10 +113,13 @@ class Recipe(object):
         parts.append(self._create_from_template(
             'startup.tmpl',
             startup_script,
-            solr_jar_path=os.path.join(destination, 'lib'),
-            undertow_conf=os.path.join(destination, 'undertow.conf'),
             pid_file=self.options['pid-file'],
             jvm_opts=self.options['jvm-opts'],
+            solr_port=self.options['port'],
+            solr_host=self.options['host'],
+            solr_home=home_dir,
+            solr_install_dir=destination,
+            solr_log_dir=log_dir,
         ))
         os.chmod(startup_script, 0755)
 
@@ -206,3 +149,11 @@ class Recipe(object):
         with open(filename, 'wb') as f:
             f.write(tmpl.render(**kwargs).encode('utf8'))
         return filename
+
+    def _copy_from_dir(self, src, dst):
+        paths = []
+        for name in os.listdir(src):
+            dst_path = os.path.join(dst, name)
+            copyfile(os.path.join(src, name),  dst_path)
+            paths.append(dst_path)
+        return paths

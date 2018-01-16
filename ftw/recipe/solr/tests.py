@@ -41,7 +41,7 @@ def setUp(test):
 
     # Install any other eggs that should be available in the tests
     zc.buildout.testing.install_develop('jinja2', test)
-    zc.buildout.testing.install_develop('markupsafe', test)
+    zc.buildout.testing.install_develop('MarkupSafe', test)
 
     # Install the recipe in develop mode
     zc.buildout.testing.install_develop('ftw.recipe.solr', test)

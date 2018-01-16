@@ -1,11 +1,50 @@
 Introduction
 ============
 
-This recipe installs a Solr server running with Solr-Undertow.
+This recipe installs a `Solr <http://lucene.apache.org/solr/>`_ 
+server with buildout.
 
-Solr-Undertow is a high performance HTTP front-end based on undertow.io that
-runs Solr and SolrCloud without an application server.
+It's kept as simple as possible and in contrast to `collective.recipe.solrinstance`
+it does not generate any Solr configuration files. Instead the user can provide
+a directory containing custom configuration files. A default set of configuration
+files for usage with Plone is provided.
 
+You can use it by adding a part like this::
+
+    [buildout]
+    parts = solr
+
+    [solr]
+    recipe = ftw.recipe.solr
+    cores =
+        core1
+
+
+Supported options
+=================
+
+The recipe supports the following options:
+
+host
+    Name or IP address of the Solr server. Defaults to ``localhost``.
+
+port
+    Server port. Defaults to ``8983``.
+
+cores
+    List of cores that should be created.
+
+url
+    Url for Solr distribution download.
+
+md5sum
+    MD5 checksum of Solr distribution.
+
+jvm-opts
+    JVM options
+
+conf
+    Path to a directory containing Solr configuration files.
 
 
 Links
