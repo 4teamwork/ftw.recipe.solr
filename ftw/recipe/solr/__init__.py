@@ -26,7 +26,7 @@ class Recipe(object):
             buildout['buildout']['directory'], 'var', self.name))
 
         options.setdefault('log-dir', os.path.join(
-            buildout['buildout']['directory'], 'var', 'log', self.name))
+            buildout['buildout']['directory'], 'var', 'log'))
 
         options.setdefault('bin-dir', os.path.join(
             buildout['buildout']['directory'], 'bin'))
@@ -107,6 +107,14 @@ class Recipe(object):
                 self._copy_from_dir(conf_src, core_conf_dir)
             )
 
+        # Create log4j.properties
+        log4j_props = os.path.join(destination, 'log4j.properties')
+        parts.append(self._create_from_template(
+            'log4j.properties.tmpl',
+            log4j_props,
+            logfile=os.path.join(log_dir, self.name + '.log')
+        ))
+
         # Create startup script
         bin_dir = self.options['bin-dir']
         startup_script = os.path.join(bin_dir, self.name)
@@ -119,14 +127,14 @@ class Recipe(object):
             solr_host=self.options['host'],
             solr_home=home_dir,
             solr_install_dir=destination,
-            solr_log_dir=log_dir,
+            log4j_props=log4j_props,
         ))
         os.chmod(startup_script, 0755)
 
         return parts
 
     def update(self):
-        pass
+        return self.install()
 
     def _core_option(self, core, option, default=None):
         """Retrieve an option for a core from a subpart falling back to the

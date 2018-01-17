@@ -33,6 +33,7 @@ We should have a Solr distribution in the parts directory::
     >>> ls(sample_buildout, 'parts', 'solr')
     d contrib
     d dist
+    -  log4j.properties
     d server
 
 We should also have a Solr home directory::
@@ -64,6 +65,38 @@ The conf direcotry should contain a basic set of Solr configuration files::
     - stopwords.txt
     - synonyms.txt
 
+Our custom log4j.properties file should configure a log file in var/log::
+
+    >>> cat(sample_buildout, 'parts', 'solr', 'log4j.properties')
+    # Default Solr log4j config
+    # rootLogger log level may be programmatically overridden by -Dsolr.log.level
+    log4j.rootLogger=INFO, file, CONSOLE
+    <BLANKLINE>
+    # Console appender will be programmatically disabled when Solr is started with option -Dsolr.log.muteconsole
+    log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
+    log4j.appender.CONSOLE.layout=org.apache.log4j.EnhancedPatternLayout
+    log4j.appender.CONSOLE.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%n
+    <BLANKLINE>
+    #- size rotation with log cleanup.
+    log4j.appender.file=org.apache.log4j.RollingFileAppender
+    log4j.appender.file.MaxFileSize=4MB
+    log4j.appender.file.MaxBackupIndex=9
+    <BLANKLINE>
+    #- File to log to and log format
+    log4j.appender.file.File=/sample-buildout/var/log/solr.log
+    log4j.appender.file.layout=org.apache.log4j.EnhancedPatternLayout
+    log4j.appender.file.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%n
+    <BLANKLINE>
+    # Adjust logging levels that should differ from root logger
+    log4j.logger.org.apache.zookeeper=WARN
+    log4j.logger.org.apache.hadoop=WARN
+    log4j.logger.org.eclipse.jetty=WARN
+    log4j.logger.org.eclipse.jetty.server.Server=INFO
+    log4j.logger.org.eclipse.jetty.server.ServerConnector=INFO
+    <BLANKLINE>
+    # set to INFO to enable infostream log messages
+    log4j.logger.org.apache.solr.update.LoggingInfoStream=OFF
+
 We should also have a startup script::
 
     >>> ls(sample_buildout, 'bin')
@@ -83,7 +116,6 @@ We should also have a startup script::
     SOLR_HOME="/sample-buildout/var/solr"
     SOLR_INSTALL_DIR="/sample-buildout/parts/solr"
     SOLR_SERVER_DIR="/sample-buildout/parts/solr/server"
-    SOLR_LOG_DIR="/sample-buildout/var/log/solr"
     <BLANKLINE>
     <BLANKLINE>
     SOLR_START_OPT=('-server' \
@@ -92,8 +124,8 @@ We should also have a startup script::
     -Djetty.port=$SOLR_PORT \
     -Djetty.home=$SOLR_SERVER_DIR \
     -Dsolr.solr.home=$SOLR_HOME \
-    -Dsolr.log.dir=$SOLR_LOG_DIR \
-    -Dsolr.install.dir=$SOLR_INSTALL_DIR)
+    -Dsolr.install.dir=$SOLR_INSTALL_DIR \
+    -Dlog4j.configuration=/sample-buildout/parts/solr/log4j.properties)
     <BLANKLINE>
     <BLANKLINE>
     start() {

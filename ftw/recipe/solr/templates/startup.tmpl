@@ -10,8 +10,6 @@ SOLR_PORT="{{ solr_port }}"
 SOLR_HOME="{{ solr_home }}"
 SOLR_INSTALL_DIR="{{ solr_install_dir }}"
 SOLR_SERVER_DIR="{{ solr_install_dir }}/server"
-SOLR_LOG_DIR="{{ solr_log_dir }}"
-
 
 SOLR_START_OPT=('-server' \
 "${JVM_OPTS[@]}" \
@@ -19,9 +17,8 @@ SOLR_START_OPT=('-server' \
 -Djetty.port=$SOLR_PORT \
 -Djetty.home=$SOLR_SERVER_DIR \
 -Dsolr.solr.home=$SOLR_HOME \
--Dsolr.log.dir=$SOLR_LOG_DIR \
--Dsolr.install.dir=$SOLR_INSTALL_DIR)
-
+-Dsolr.install.dir=$SOLR_INSTALL_DIR \
+-Dlog4j.configuration=file:{{ log4j_props }})
 
 start() {
     cd "$SOLR_SERVER_DIR"
