@@ -99,24 +99,27 @@
       trailing underscores (e.g. _version_) are reserved.
     -->
 
-
-    <field name="UID" type="string" indexed="true" stored="true" required="true" multiValued="false" />
     <!-- docValues are enabled by default for long type so we don't need to index the version field  -->
     <field name="_version_" type="plong" indexed="false" stored="false"/>
     <field name="_root_" type="string" indexed="true" stored="false" docValues="false" />
 
-
-    <field name="SearchableText" type="text" indexed="true" stored="true"/>
-    <field name="Description" type="text" indexed="true" stored="true"/>
-    <field name="Title" type="text" indexed="true" stored="true"/>
+    <!-- Plone default fields -->
     <field name="allowedRolesAndUsers" type="string" indexed="true" stored="false" multiValued="true"/>
-    <field name="path_parent" type="descendent_path" indexed="true" stored="true" />
-    <field name="path" type="string" indexed="true" stored="false" />
-    <field name="id" type="string" indexed="true" stored="false" />
-    <field name="portal_type" type="string" indexed="true" stored="false" />
     <field name="created" type="pdate" indexed="true" stored="false" />
+    <field name="Description" type="text" indexed="true" stored="true"/>
+    <field name="effective" type="pdate" indexed="true" stored="false" />
+    <field name="expires" type="pdate" indexed="true" stored="false" />
+    <field name="getIcon" type="string" indexed="false" stored="false" />
+    <field name="getObjSize" type="string" indexed="false" stored="false" />
+    <field name="id" type="string" indexed="true" stored="false" />
     <field name="modified" type="pdate" indexed="true" stored="false" />
+    <field name="path" type="string" indexed="true" stored="false" />
+    <field name="path_parent" type="descendent_path" indexed="true" stored="true" />
+    <field name="portal_type" type="string" indexed="true" stored="false" />
     <field name="review_state" type="string" indexed="true" stored="false" />
+    <field name="SearchableText" type="text" indexed="true" stored="true"/>
+    <field name="Title" type="text" indexed="true" stored="true"/>
+    <field name="UID" type="string" indexed="true" stored="true" required="true" multiValued="false" />
 
     <copyField source="path" dest="path_parent"/>
 
