@@ -79,8 +79,8 @@ Our custom log4j.properties file should configure a log file in var/log::
     <BLANKLINE>
     #- size rotation with log cleanup.
     log4j.appender.file=org.apache.log4j.RollingFileAppender
-    log4j.appender.file.MaxFileSize=4MB
-    log4j.appender.file.MaxBackupIndex=9
+    log4j.appender.file.MaxFileSize=50MB
+    log4j.appender.file.MaxBackupIndex=4
     <BLANKLINE>
     #- File to log to and log format
     log4j.appender.file.File=/sample-buildout/var/log/solr.log
@@ -117,7 +117,6 @@ We should also have a startup script::
     SOLR_INSTALL_DIR="/sample-buildout/parts/solr"
     SOLR_SERVER_DIR="/sample-buildout/parts/solr/server"
     <BLANKLINE>
-    <BLANKLINE>
     SOLR_START_OPT=('-server' \
     "${JVM_OPTS[@]}" \
     -Djetty.host=localhost
@@ -125,8 +124,8 @@ We should also have a startup script::
     -Djetty.home=$SOLR_SERVER_DIR \
     -Dsolr.solr.home=$SOLR_HOME \
     -Dsolr.install.dir=$SOLR_INSTALL_DIR \
+    -Dsolr.log.dir=/sample-buildout/var/log \
     -Dlog4j.configuration=/sample-buildout/parts/solr/log4j.properties)
-    <BLANKLINE>
     <BLANKLINE>
     start() {
         cd "$SOLR_SERVER_DIR"
@@ -141,17 +140,38 @@ We should also have a startup script::
         "$JAVACMD" "${SOLR_START_OPT[@]}" -jar start.jar --module=http
     }
     <BLANKLINE>
+    start_console() {
+        cd "$SOLR_SERVER_DIR"
+        "$JAVACMD" "${SOLR_START_OPT[@]}" -Dsolr.log.muteconsole -jar start.jar --module=http
+    }
+    <BLANKLINE>
     stop() {
-        pid=`cat "$PID_FILE"`
-        kill -TERM $pid
-        echo "Solr stopped successfully."
+        if [ -e $PID_FILE ]; then
+            pid=`cat "$PID_FILE"`
+            ps -p $pid | grep start.jar > /dev/null 2>&1
+            if [ $? -eq 0 ]
+            then
+                kill -TERM $pid
+                rm -f $PID_FILE
+                echo "Solr stopped successfully."
+            else
+                echo "Solr is not running."
+            fi
+        else
+            echo "Solr is not running."
+        fi
     }
     <BLANKLINE>
     status() {
-        pid=`cat "$PID_FILE"`
-        if ps -p $pid > /dev/null 2>&1
-        then
-            echo "Solr running with pid $pid."
+        if [ -e $PID_FILE ]; then
+            pid=`cat "$PID_FILE"`
+            ps -p $pid | grep start.jar > /dev/null 2>&1
+            if [ $? -eq 0 ]
+            then
+                echo "Solr running with pid $pid."
+            else
+                echo "Solr is not running."
+            fi
         else
             echo "Solr is not running."
         fi
@@ -166,6 +186,10 @@ We should also have a startup script::
             start_fg
             ;;
     <BLANKLINE>
+        console)
+            start_console
+            ;;
+    <BLANKLINE>
         stop)
             stop
             ;;
@@ -177,5 +201,9 @@ We should also have a startup script::
     <BLANKLINE>
         status)
             status
+            ;;
+        *)
+            echo "Usage: `basename "$0"` {start|fg|console|stop|restart|status}" >&2
+            exit 1
             ;;
     esac

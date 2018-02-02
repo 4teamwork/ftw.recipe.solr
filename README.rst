@@ -4,7 +4,7 @@ Introduction
 This recipe installs a `Solr <http://lucene.apache.org/solr/>`_ 
 server with buildout.
 
-It's kept as simple as possible and in contrast to `collective.recipe.solrinstance`
+It's kept as simple as possible and contrary to `collective.recipe.solrinstance`
 it does not generate any Solr configuration files. Instead the user can provide
 a directory containing custom configuration files. A default set of configuration
 files for usage with Plone is provided.
@@ -41,7 +41,8 @@ md5sum
     MD5 checksum of Solr distribution.
 
 jvm-opts
-    JVM options
+    Can be used to configure JVM options. Defaults to 
+    ``-Xms512m -Xmx512m -Xss256k``
 
 conf
     Path to a directory containing Solr configuration files.

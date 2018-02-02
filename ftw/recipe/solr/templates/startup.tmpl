@@ -18,32 +18,54 @@ SOLR_START_OPT=('-server' \
 -Djetty.home=$SOLR_SERVER_DIR \
 -Dsolr.solr.home=$SOLR_HOME \
 -Dsolr.install.dir=$SOLR_INSTALL_DIR \
+-Dsolr.log.dir={{ log_dir }} \
 -Dlog4j.configuration=file:{{ log4j_props }})
 
 start() {
     cd "$SOLR_SERVER_DIR"
-	nohup "$JAVACMD" "${SOLR_START_OPT[@]}" -Dsolr.log.muteconsole -jar start.jar --module=http >/dev/null 2>&1 &
-	echo $! > "$PID_FILE"
-	pid=`cat "$PID_FILE"`
-	echo "Solr started with pid $pid."
+    nohup "$JAVACMD" "${SOLR_START_OPT[@]}" -Dsolr.log.muteconsole -jar start.jar --module=http >/dev/null 2>&1 &
+    echo $! > "$PID_FILE"
+    pid=`cat "$PID_FILE"`
+    echo "Solr started with pid $pid."
 }
 
 start_fg() {
     cd "$SOLR_SERVER_DIR"
-	"$JAVACMD" "${SOLR_START_OPT[@]}" -jar start.jar --module=http
+    "$JAVACMD" "${SOLR_START_OPT[@]}" -jar start.jar --module=http
+}
+
+start_console() {
+    cd "$SOLR_SERVER_DIR"
+    "$JAVACMD" "${SOLR_START_OPT[@]}" -Dsolr.log.muteconsole -jar start.jar --module=http
 }
 
 stop() {
-	pid=`cat "$PID_FILE"`
-	kill -TERM $pid
-	echo "Solr stopped successfully."
+    if [ -e $PID_FILE ]; then
+        pid=`cat "$PID_FILE"`
+        ps -p $pid | grep start.jar > /dev/null 2>&1
+        if [ $? -eq 0 ]
+        then
+            kill -TERM $pid
+            rm -f $PID_FILE
+            echo "Solr stopped successfully."
+        else
+            echo "Solr is not running."
+        fi
+    else
+        echo "Solr is not running."
+    fi
 }
 
 status() {
-    pid=`cat "$PID_FILE"`
-    if ps -p $pid > /dev/null 2>&1
-    then
-        echo "Solr running with pid $pid."
+    if [ -e $PID_FILE ]; then
+        pid=`cat "$PID_FILE"`
+        ps -p $pid | grep start.jar > /dev/null 2>&1
+        if [ $? -eq 0 ]
+        then
+            echo "Solr running with pid $pid."
+        else
+            echo "Solr is not running."
+        fi
     else
         echo "Solr is not running."
     fi
@@ -58,6 +80,10 @@ case "$1" in
         start_fg
         ;;
 
+    console)
+        start_console
+        ;;
+
     stop)
         stop
         ;;
@@ -69,5 +95,9 @@ case "$1" in
 
     status)
         status
+        ;;
+    *)
+        echo "Usage: `basename "$0"` {start|fg|console|stop|restart|status}" >&2
+        exit 1
         ;;
 esac

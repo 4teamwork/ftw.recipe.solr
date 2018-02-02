@@ -127,6 +127,7 @@ class Recipe(object):
             solr_host=self.options['host'],
             solr_home=home_dir,
             solr_install_dir=destination,
+            log_dir=log_dir,
             log4j_props=log4j_props,
         ))
         os.chmod(startup_script, 0755)
