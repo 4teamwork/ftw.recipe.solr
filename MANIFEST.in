@@ -1,0 +1,4 @@
+graft ftw
+include *.rst
+include *.txt
+global-exclude *.pyc
