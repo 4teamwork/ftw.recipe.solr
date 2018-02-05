@@ -207,3 +207,39 @@ We should also have a startup script::
             exit 1
             ;;
     esac
+
+
+We can provide the Solr configuration from an egg::
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = solr
+    ... index=https://pypi.python.org/simple/
+    ...
+    ... [solr]
+    ... recipe = ftw.recipe.solr
+    ... url = {server_url}solr-7.2.1.tgz
+    ... md5sum = 95e828f50d34c1b40e3afa8630138664
+    ... conf-egg = ftw.recipe.solr
+    ... conf = /ftw/recipe/solr/conf
+    ...
+    ... cores = core1
+    ... """.format(server_url=server_url))
+
+Running the buildout gives us::
+
+    >>> print system(buildout)
+    Uninstalling solr.
+    Installing solr.
+    Downloading http://test.server/solr-7.2.1.tgz
+    <BLANKLINE>
+
+The conf direcotry should contain our Solr configuration files::
+
+    >>> ls(sample_buildout, 'var', 'solr', 'core1', 'conf')
+    - managed-schema
+    - mapping-FoldToASCII.txt
+    - solrconfig.xml
+    - stopwords.txt
+    - synonyms.txt

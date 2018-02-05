@@ -40,6 +40,7 @@ def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
 
     # Install any other eggs that should be available in the tests
+    zc.buildout.testing.install_develop('zc.recipe.egg', test)
     zc.buildout.testing.install_develop('jinja2', test)
     zc.buildout.testing.install_develop('MarkupSafe', test)
 

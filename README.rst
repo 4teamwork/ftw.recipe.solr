@@ -47,6 +47,10 @@ jvm-opts
 conf
     Path to a directory containing Solr configuration files.
 
+conf-egg
+    If provided, the path given in `conf` is prepended with the path of the
+    given egg.
+
 
 Links
 =====

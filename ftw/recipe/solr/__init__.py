@@ -5,7 +5,9 @@ from jinja2 import Environment, PackageLoader
 from setuptools import archive_util
 from shutil import copyfile
 from zc.buildout.download import Download
+from zc.recipe.egg import Eggs
 import os
+import pkg_resources
 
 
 class Recipe(object):
@@ -84,6 +86,17 @@ class Recipe(object):
             os.path.join(home_dir, 'zoo.cfg'),
         ))
 
+        # Determine the location of the egg containing the Solr conf files
+        conf_egg = self.options.get('conf-egg')
+        if conf_egg:
+            eggs = Eggs(self.buildout, conf_egg, {})
+            requirements, ws = eggs.working_set()
+            requirement = pkg_resources.Requirement.parse(conf_egg)
+            package = ws.find(requirement)
+            conf_src_base_path = package.location
+        else:
+            conf_src_base_path = ''
+
         # Create cores
         for core in self.cores:
             core_dir = os.path.join(home_dir, core)
@@ -103,6 +116,9 @@ class Recipe(object):
             conf_src = self._core_option(core, 'conf')
             if not conf_src:
                 conf_src = os.path.join(os.path.dirname(__file__), 'conf')
+            if conf_src_base_path:
+                conf_src = os.path.join(
+                    conf_src_base_path, conf_src.lstrip('/'))
             parts.extend(
                 self._copy_from_dir(conf_src, core_conf_dir)
             )

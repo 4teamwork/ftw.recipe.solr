@@ -33,6 +33,7 @@ setup(
     install_requires=[
         'setuptools',
         'zc.buildout',
+        'zc.recipe.egg',
         'jinja2',
     ],
     tests_require=tests_require,
