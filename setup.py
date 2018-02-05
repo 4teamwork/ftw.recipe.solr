@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 from setuptools import setup, find_packages
 
 version = '1.0.1.dev0'
@@ -11,9 +10,7 @@ setup(
     description="A zc.buildout recipe to install a Solr server",
     long_description=open("README.rst").read()
     + "\n" +
-    open("HISTORY.txt").read()
-    + "\n" +
-    open(os.path.join("ftw", "recipe", "solr", "README.txt")).read(),
+    open("HISTORY.txt").read(),
     classifiers=[
         'Framework :: Buildout :: Recipe',
         'Intended Audience :: Developers',
