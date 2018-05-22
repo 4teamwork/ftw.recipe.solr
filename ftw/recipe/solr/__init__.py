@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from fnmatch import fnmatch
 from ftw.recipe.solr.defaults import DEFAULT_OPTIONS
+from ftw.recipe.solr.utils import chmod_executable
 from jinja2 import Environment, PackageLoader
 from setuptools import archive_util
 from shutil import copyfile
@@ -146,7 +147,7 @@ class Recipe(object):
             log_dir=log_dir,
             log4j_props=log4j_props,
         ))
-        os.chmod(startup_script, 0755)
+        chmod_executable(startup_script)
 
         return parts
 
