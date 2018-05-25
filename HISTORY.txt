@@ -7,6 +7,9 @@ Changelog
 - Only chmod startup script to executable if it's not already executable.
   [buchi]
 
+- Update default download url to version 7.3.1.
+  [buchi]
+
 
 1.1.0 (2018-02-05)
 ------------------
