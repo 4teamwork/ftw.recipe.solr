@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.1.1 (unreleased)
+1.2.0 (2018-05-25)
 ------------------
 
 - Only chmod startup script to executable if it's not already executable.
