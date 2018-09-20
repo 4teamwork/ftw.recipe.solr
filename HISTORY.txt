@@ -8,6 +8,9 @@ Changelog
   This fixes handling of decomposed unicode (aka NFD, NFKD).
   [buchi]
 
+- Replace shell process by Solr process when starting in foreground.
+  [buchi]
+
 
 1.2.0 (2018-05-25)
 ------------------
