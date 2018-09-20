@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2.1 (unreleased)
+1.2.1 (2018-09-20)
 ------------------
 
 - Add ICUNormalizer2CharFilterFactory char filter in provided schema.
