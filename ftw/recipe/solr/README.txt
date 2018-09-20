@@ -137,12 +137,12 @@ We should also have a startup script::
     <BLANKLINE>
     start_fg() {
         cd "$SOLR_SERVER_DIR"
-        "$JAVACMD" "${SOLR_START_OPT[@]}" -jar start.jar --module=http
+        exec "$JAVACMD" "${SOLR_START_OPT[@]}" -jar start.jar --module=http
     }
     <BLANKLINE>
     start_console() {
         cd "$SOLR_SERVER_DIR"
-        "$JAVACMD" "${SOLR_START_OPT[@]}" -Dsolr.log.muteconsole -jar start.jar --module=http
+        exec "$JAVACMD" "${SOLR_START_OPT[@]}" -Dsolr.log.muteconsole -jar start.jar --module=http
     }
     <BLANKLINE>
     stop() {
