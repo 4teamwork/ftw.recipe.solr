@@ -8,6 +8,9 @@ Changelog
   Requires Solr 7.4.0 or later.
   [buchi]
 
+- Update default URL and solrconfig.xml to version 8.1.0.
+  [buchi]
+
 
 1.2.1 (2018-09-20)
 ------------------
