@@ -124,12 +124,14 @@ class Recipe(object):
                 self._copy_from_dir(conf_src, core_conf_dir)
             )
 
-        # Create log4j.properties
-        log4j_props = os.path.join(destination, 'log4j.properties')
+        # Create log4j2.xml
+        log4j2_xml = os.path.join(destination, 'log4j2.xml')
         parts.append(self._create_from_template(
-            'log4j.properties.tmpl',
-            log4j_props,
-            logfile=os.path.join(log_dir, self.name + '.log')
+            'log4j2.xml.tmpl',
+            log4j2_xml,
+            logfile=os.path.join(log_dir, self.name + '.log'),
+            slow_logfile=os.path.join(
+                log_dir, self.name + '_slow_requests.log'),
         ))
 
         # Create startup script
@@ -145,7 +147,7 @@ class Recipe(object):
             solr_home=home_dir,
             solr_install_dir=destination,
             log_dir=log_dir,
-            log4j_props=log4j_props,
+            log4j2_xml=log4j2_xml,
         ))
         chmod_executable(startup_script)
 

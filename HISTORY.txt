@@ -4,7 +4,9 @@ Changelog
 1.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Update Log4J configuration: Replace log4j.properties with log4j2.xml.
+  Requires Solr 7.4.0 or later.
+  [buchi]
 
 
 1.2.1 (2018-09-20)

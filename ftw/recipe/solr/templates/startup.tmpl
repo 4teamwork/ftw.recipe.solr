@@ -19,7 +19,7 @@ SOLR_START_OPT=('-server' \
 -Dsolr.solr.home=$SOLR_HOME \
 -Dsolr.install.dir=$SOLR_INSTALL_DIR \
 -Dsolr.log.dir={{ log_dir }} \
--Dlog4j.configuration=file:{{ log4j_props }})
+-Dlog4j.configuration=file:{{ log4j2_xml }})
 
 start() {
     cd "$SOLR_SERVER_DIR"
