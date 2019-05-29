@@ -120,7 +120,7 @@
     <field name="path_parent" type="descendent_path" indexed="true" stored="true" />
     <field name="portal_type" type="string" indexed="true" stored="false" />
     <field name="review_state" type="string" indexed="true" stored="false" />
-    <field name="SearchableText" type="text" indexed="true" stored="true"/>
+    <field name="SearchableText" type="text" indexed="true" stored="true" large="true"/>
     <field name="sortable_title" type="string" indexed="true" stored="false" />
     <field name="Subject" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="Title" type="text" indexed="true" stored="true"/>
