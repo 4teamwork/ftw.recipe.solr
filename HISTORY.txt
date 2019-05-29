@@ -11,6 +11,9 @@ Changelog
 - Update default URL and solrconfig.xml to version 8.1.0.
   [buchi]
 
+- Add sortable_title and path_depth fields to provided schema.
+  [buchi]
+
 
 1.2.1 (2018-09-20)
 ------------------
