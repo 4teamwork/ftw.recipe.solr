@@ -8,7 +8,7 @@ Changelog
   Requires Solr 7.4.0 or later.
   [buchi]
 
-- Update default URL and solrconfig.xml to version 8.1.0.
+- Update default URL and solrconfig.xml to version 8.1.1.
   [buchi]
 
 - Add sortable_title and path_depth fields to provided schema.
