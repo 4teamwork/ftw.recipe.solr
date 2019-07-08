@@ -24,6 +24,10 @@ We'll start by creating a simple buildout that uses our recipe::
 Running the buildout gives us::
 
     >>> print system(buildout)
+    Getting distribution for 'jinja2'.
+    Got Jinja2 2.10.1.
+    Getting distribution for 'zc.recipe.egg>=2.0.6'.
+    Got zc.recipe.egg 2.0.7.
     Installing solr.
     Downloading http://test.server/solr-7.2.1.tgz
     <BLANKLINE>
