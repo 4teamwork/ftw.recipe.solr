@@ -4,7 +4,7 @@ Changelog
 1.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Respect SOLR environment variables set outside of the startup script [jone].
 
 
 1.2.1 (2018-09-20)

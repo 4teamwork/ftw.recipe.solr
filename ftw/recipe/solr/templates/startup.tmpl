@@ -4,12 +4,12 @@ DEFAULT_JVM_OPTS="-Dfile.encoding=UTF-8"
 JVM_OPTS=(${DEFAULT_JVM_OPTS[@]} {{ jvm_opts }})
 
 JAVACMD="java"
-PID_FILE="{{ pid_file }}"
+PID_FILE=${PID_FILE:="{{ pid_file }}"}
 
-SOLR_PORT="{{ solr_port }}"
-SOLR_HOME="{{ solr_home }}"
-SOLR_INSTALL_DIR="{{ solr_install_dir }}"
-SOLR_SERVER_DIR="{{ solr_install_dir }}/server"
+SOLR_PORT=${SOLR_PORT:="{{ solr_port }}"}
+SOLR_HOME=${SOLR_HOME:="{{ solr_home }}"}
+SOLR_INSTALL_DIR=${SOLR_INSTALL_DIR:="{{ solr_install_dir }}"}
+SOLR_SERVER_DIR=${SOLR_SERVER_DIR:="{{ solr_install_dir }}/server"}
 
 SOLR_START_OPT=('-server' \
 "${JVM_OPTS[@]}" \
