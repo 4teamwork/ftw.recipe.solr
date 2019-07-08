@@ -164,12 +164,12 @@ We should also have a startup script::
     JVM_OPTS=(${DEFAULT_JVM_OPTS[@]} -Xms512m -Xmx512m -Xss256k)
     <BLANKLINE>
     JAVACMD="java"
-    PID_FILE="/sample-buildout/var/solr/solr.pid"
+    PID_FILE=${PID_FILE:="/sample-buildout/var/solr/solr.pid"}
     <BLANKLINE>
-    SOLR_PORT="8983"
-    SOLR_HOME="/sample-buildout/var/solr"
-    SOLR_INSTALL_DIR="/sample-buildout/parts/solr"
-    SOLR_SERVER_DIR="/sample-buildout/parts/solr/server"
+    SOLR_PORT=${SOLR_PORT:="8983"}
+    SOLR_HOME=${SOLR_HOME:="/sample-buildout/var/solr"}
+    SOLR_INSTALL_DIR=${SOLR_INSTALL_DIR:="/sample-buildout/parts/solr"}
+    SOLR_SERVER_DIR=${SOLR_SERVER_DIR:="/sample-buildout/parts/solr/server"}
     <BLANKLINE>
     SOLR_START_OPT=('-server' \
     "${JVM_OPTS[@]}" \
