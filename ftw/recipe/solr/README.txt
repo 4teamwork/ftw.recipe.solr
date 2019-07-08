@@ -24,6 +24,10 @@ We'll start by creating a simple buildout that uses our recipe::
 Running the buildout gives us::
 
     >>> print system(buildout)
+    Getting distribution for 'jinja2'.
+    Got Jinja2 2.10.1.
+    Getting distribution for 'zc.recipe.egg>=2.0.6'.
+    Got zc.recipe.egg 2.0.7.
     Installing solr.
     Downloading http://test.server/solr-7.2.1.tgz
     <BLANKLINE>
@@ -33,7 +37,7 @@ We should have a Solr distribution in the parts directory::
     >>> ls(sample_buildout, 'parts', 'solr')
     d contrib
     d dist
-    -  log4j.properties
+    -  log4j2.xml
     d server
 
 We should also have a Solr home directory::
@@ -65,37 +69,87 @@ The conf direcotry should contain a basic set of Solr configuration files::
     - stopwords.txt
     - synonyms.txt
 
-Our custom log4j.properties file should configure a log file in var/log::
+Our custom log4j2.xml file should configure a log file in var/log::
 
-    >>> cat(sample_buildout, 'parts', 'solr', 'log4j.properties')
-    # Default Solr log4j config
-    # rootLogger log level may be programmatically overridden by -Dsolr.log.level
-    log4j.rootLogger=INFO, file, CONSOLE
+    >>> cat(sample_buildout, 'parts', 'solr', 'log4j2.xml')
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!--
+      Licensed to the Apache Software Foundation (ASF) under one or more
+      contributor license agreements.  See the NOTICE file distributed with
+      this work for additional information regarding copyright ownership.
+      The ASF licenses this file to You under the Apache License, Version 2.0
+      (the "License"); you may not use this file except in compliance with
+      the License.  You may obtain a copy of the License at
     <BLANKLINE>
-    # Console appender will be programmatically disabled when Solr is started with option -Dsolr.log.muteconsole
-    log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
-    log4j.appender.CONSOLE.layout=org.apache.log4j.EnhancedPatternLayout
-    log4j.appender.CONSOLE.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%n
+          http://www.apache.org/licenses/LICENSE-2.0
     <BLANKLINE>
-    #- size rotation with log cleanup.
-    log4j.appender.file=org.apache.log4j.RollingFileAppender
-    log4j.appender.file.MaxFileSize=50MB
-    log4j.appender.file.MaxBackupIndex=4
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+      -->
     <BLANKLINE>
-    #- File to log to and log format
-    log4j.appender.file.File=/sample-buildout/var/log/solr.log
-    log4j.appender.file.layout=org.apache.log4j.EnhancedPatternLayout
-    log4j.appender.file.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%n
+    <!-- Configuration for asynchronous logging -->
+    <Configuration>
+      <Appenders>
     <BLANKLINE>
-    # Adjust logging levels that should differ from root logger
-    log4j.logger.org.apache.zookeeper=WARN
-    log4j.logger.org.apache.hadoop=WARN
-    log4j.logger.org.eclipse.jetty=WARN
-    log4j.logger.org.eclipse.jetty.server.Server=INFO
-    log4j.logger.org.eclipse.jetty.server.ServerConnector=INFO
+        <Console name="STDOUT" target="SYSTEM_OUT">
+          <PatternLayout>
+            <Pattern>
+              %maxLen{%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%notEmpty{ =>%ex{short}}}{10240}%n
+            </Pattern>
+          </PatternLayout>
+        </Console>
     <BLANKLINE>
-    # set to INFO to enable infostream log messages
-    log4j.logger.org.apache.solr.update.LoggingInfoStream=OFF
+        <RollingRandomAccessFile
+            name="MainLogFile"
+            fileName="/sample-buildout/var/log/solr.log"
+            filePattern="/sample-buildout/var/log/solr.log.%i" >
+          <PatternLayout>
+            <Pattern>
+              %maxLen{%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%notEmpty{ =>%ex{short}}}{10240}%n
+            </Pattern>
+          </PatternLayout>
+          <Policies>
+            <OnStartupTriggeringPolicy />
+            <SizeBasedTriggeringPolicy size="50 MB"/>
+          </Policies>
+          <DefaultRolloverStrategy max="4"/>
+        </RollingRandomAccessFile>
+    <BLANKLINE>
+        <RollingRandomAccessFile
+            name="SlowLogFile"
+            fileName="/sample-buildout/var/log/solr_slow_requests.log"
+            filePattern="/sample-buildout/var/log/solr_slow_requests.log.%i" >
+          <PatternLayout>
+            <Pattern>
+              %maxLen{%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p (%t) [%X{collection} %X{shard} %X{replica} %X{core}] %c{1.} %m%notEmpty{ =>%ex{short}}}{10240}%n
+            </Pattern>
+          </PatternLayout>
+          <Policies>
+            <OnStartupTriggeringPolicy />
+            <SizeBasedTriggeringPolicy size="50 MB"/>
+          </Policies>
+          <DefaultRolloverStrategy max="4"/>
+        </RollingRandomAccessFile>
+    <BLANKLINE>
+      </Appenders>
+      <Loggers>
+        <AsyncLogger name="org.apache.hadoop" level="warn"/>
+        <AsyncLogger name="org.apache.solr.update.LoggingInfoStream" level="off"/>
+        <AsyncLogger name="org.apache.zookeeper" level="warn"/>
+        <AsyncLogger name="org.apache.solr.core.SolrCore.SlowRequest" level="info" additivity="false">
+          <AppenderRef ref="SlowLogFile"/>
+        </AsyncLogger>
+    <BLANKLINE>
+        <AsyncRoot level="info">
+          <AppenderRef ref="MainLogFile"/>
+          <AppenderRef ref="STDOUT"/>
+        </AsyncRoot>
+      </Loggers>
+    </Configuration>
+
 
 We should also have a startup script::
 
@@ -125,7 +179,7 @@ We should also have a startup script::
     -Dsolr.solr.home=$SOLR_HOME \
     -Dsolr.install.dir=$SOLR_INSTALL_DIR \
     -Dsolr.log.dir=/sample-buildout/var/log \
-    -Dlog4j.configuration=/sample-buildout/parts/solr/log4j.properties)
+    -Dlog4j.configuration=/sample-buildout/parts/solr/log4j2.xml)
     <BLANKLINE>
     start() {
         cd "$SOLR_SERVER_DIR"
