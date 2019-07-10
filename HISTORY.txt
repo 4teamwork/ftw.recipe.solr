@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2.2 (unreleased)
+1.2.2 (2019-07-10)
 ------------------
 
 - Backport: Respect SOLR environment variables set outside of the startup script [jone].
