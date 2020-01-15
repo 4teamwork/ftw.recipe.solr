@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.3.2 (unreleased)
+1.3.2 (2020-01-15)
 ------------------
 
 - Fix detection of running Solr on Linux used in `bin/solr stop` and `bin/solr status`.
