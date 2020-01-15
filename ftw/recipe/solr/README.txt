@@ -202,7 +202,7 @@ We should also have a startup script::
     stop() {
         if [ -e $PID_FILE ]; then
             pid=`cat "$PID_FILE"`
-            ps -p $pid | grep start.jar > /dev/null 2>&1
+            ps -p $pid -f | grep start.jar > /dev/null 2>&1
             if [ $? -eq 0 ]
             then
                 kill -TERM $pid
@@ -219,7 +219,7 @@ We should also have a startup script::
     status() {
         if [ -e $PID_FILE ]; then
             pid=`cat "$PID_FILE"`
-            ps -p $pid | grep start.jar > /dev/null 2>&1
+            ps -p $pid -f | grep start.jar > /dev/null 2>&1
             if [ $? -eq 0 ]
             then
                 echo "Solr running with pid $pid."
