@@ -4,7 +4,8 @@ Changelog
 1.3.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix detection of running Solr on Linux used in `bin/solr stop` and `bin/solr status`.
+  [siegy22]
 
 
 1.3.1 (2019-07-08)
