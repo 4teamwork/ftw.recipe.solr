@@ -19,17 +19,21 @@ We'll start by creating a simple buildout that uses our recipe::
     ... md5sum = 95e828f50d34c1b40e3afa8630138664
     ...
     ... cores = core1
+    ...
+    ... [versions]
+    ... setuptools = <45.0
     ... """.format(server_url=server_url))
 
 Running the buildout gives us::
 
     >>> print system(buildout)
     Getting distribution for 'jinja2'.
-    Got Jinja2 2.10.1.
+    Got Jinja2 2.10.3.
     Getting distribution for 'zc.recipe.egg>=2.0.6'.
     Got zc.recipe.egg 2.0.7.
     Installing solr.
     Downloading http://test.server/solr-7.2.1.tgz
+    WARNING: The easy_install command is deprecated and will be removed in a future version.
     <BLANKLINE>
 
 We should have a Solr distribution in the parts directory::
@@ -202,7 +206,7 @@ We should also have a startup script::
     stop() {
         if [ -e $PID_FILE ]; then
             pid=`cat "$PID_FILE"`
-            ps -p $pid | grep start.jar > /dev/null 2>&1
+            ps -p $pid -f | grep start.jar > /dev/null 2>&1
             if [ $? -eq 0 ]
             then
                 kill -TERM $pid
@@ -219,7 +223,7 @@ We should also have a startup script::
     status() {
         if [ -e $PID_FILE ]; then
             pid=`cat "$PID_FILE"`
-            ps -p $pid | grep start.jar > /dev/null 2>&1
+            ps -p $pid -f | grep start.jar > /dev/null 2>&1
             if [ $? -eq 0 ]
             then
                 echo "Solr running with pid $pid."
@@ -279,6 +283,9 @@ We can provide the Solr configuration from an egg::
     ... conf = /ftw/recipe/solr/conf
     ...
     ... cores = core1
+    ...
+    ... [versions]
+    ... setuptools = <45.0
     ... """.format(server_url=server_url))
 
 Running the buildout gives us::
