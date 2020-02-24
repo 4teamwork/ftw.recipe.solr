@@ -28,9 +28,9 @@ Running the buildout gives us::
 
     >>> print system(buildout)
     Getting distribution for 'jinja2'.
-    Got Jinja2 2.10.3.
+    Got Jinja2 ...
     Getting distribution for 'zc.recipe.egg>=2.0.6'.
-    Got zc.recipe.egg 2.0.7.
+    Got zc.recipe.egg ...
     Installing solr.
     Downloading http://test.server/solr-7.2.1.tgz
     WARNING: The easy_install command is deprecated and will be removed in a future version.
