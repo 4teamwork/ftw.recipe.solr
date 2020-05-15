@@ -1,7 +1,7 @@
 Introduction
 ============
 
-This recipe installs a `Solr <http://lucene.apache.org/solr/>`_ 
+This recipe installs a `Solr <http://lucene.apache.org/solr/>`_
 server with buildout.
 
 It's kept as simple as possible and contrary to `collective.recipe.solrinstance`
@@ -41,7 +41,7 @@ md5sum
     MD5 checksum of Solr distribution.
 
 jvm-opts
-    Can be used to configure JVM options. Defaults to 
+    Can be used to configure JVM options. Defaults to
     ``-Xms512m -Xmx512m -Xss256k``
 
 conf
@@ -50,6 +50,11 @@ conf
 conf-egg
     If provided, the path given in `conf` is prepended with the path of the
     given egg.
+
+shards-whitelist
+    If specified, this list limits what nodes can be requested in the shards
+    request parameter. See `Configuring the ShardHandlerFactory
+    <https://lucene.apache.org/solr/guide/8_1/distributed-requests.html#configuring-the-shardhandlerfactory>`_
 
 
 Links

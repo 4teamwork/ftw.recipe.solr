@@ -79,6 +79,7 @@ class Recipe(object):
         parts.append(self._create_from_template(
             'solr.xml.tmpl',
             os.path.join(home_dir, 'solr.xml'),
+            shardsWhitelist=self.options.get('shards-whitelist')
         ))
 
         # Create zoo.cfg

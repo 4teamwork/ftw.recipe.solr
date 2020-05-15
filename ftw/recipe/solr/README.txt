@@ -296,7 +296,7 @@ Running the buildout gives us::
     Downloading http://test.server/solr-7.2.1.tgz
     <BLANKLINE>
 
-The conf direcotry should contain our Solr configuration files::
+The conf directory should contain our Solr configuration files::
 
     >>> ls(sample_buildout, 'var', 'solr', 'core1', 'conf')
     - managed-schema
@@ -304,3 +304,62 @@ The conf direcotry should contain our Solr configuration files::
     - solrconfig.xml
     - stopwords.txt
     - synonyms.txt
+
+
+We can provide a shards whitelist::
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = solr
+    ... index=https://pypi.python.org/simple/
+    ...
+    ... [solr]
+    ... recipe = ftw.recipe.solr
+    ... url = {server_url}solr-7.2.1.tgz
+    ... md5sum = 95e828f50d34c1b40e3afa8630138664
+    ... shards-whitelist = localhost:11130/solr/this,localhost:22230/solr/that
+    ...
+    ... cores = core1
+    ...
+    ... [versions]
+    ... setuptools = <45.0
+    ... """.format(server_url=server_url))
+
+Running the buildout gives us::
+
+    >>> print system(buildout)
+    Uninstalling solr.
+    Installing solr.
+    Downloading http://test.server/solr-7.2.1.tgz
+    <BLANKLINE>
+
+The solr.xml file contains our whitelisted shards::
+
+    >>> cat(sample_buildout, 'var', 'solr', 'solr.xml')
+    <solr>
+    <BLANKLINE>
+      <solrcloud>
+    <BLANKLINE>
+        <str name="host">${host:}</str>
+        <int name="hostPort">${jetty.port:8983}</int>
+        <str name="hostContext">${hostContext:solr}</str>
+    <BLANKLINE>
+        <bool name="genericCoreNodeNames">${genericCoreNodeNames:true}</bool>
+    <BLANKLINE>
+        <int name="zkClientTimeout">${zkClientTimeout:30000}</int>
+        <int name="distribUpdateSoTimeout">${distribUpdateSoTimeout:600000}</int>
+        <int name="distribUpdateConnTimeout">${distribUpdateConnTimeout:60000}</int>
+        <str name="zkCredentialsProvider">${zkCredentialsProvider:org.apache.solr.common.cloud.DefaultZkCredentialsProvider}</str>
+        <str name="zkACLProvider">${zkACLProvider:org.apache.solr.common.cloud.DefaultZkACLProvider}</str>
+    <BLANKLINE>
+      </solrcloud>
+    <BLANKLINE>
+      <shardHandlerFactory name="shardHandlerFactory"
+        class="HttpShardHandlerFactory">
+        <int name="socketTimeout">${socketTimeout:600000}</int>
+        <int name="connTimeout">${connTimeout:60000}</int>
+        <str name="shardsWhitelist">localhost:11130/solr/this,localhost:22230/solr/that</str>
+      </shardHandlerFactory>
+    <BLANKLINE>
+    </solr>
