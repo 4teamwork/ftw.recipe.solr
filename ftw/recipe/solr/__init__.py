@@ -150,6 +150,18 @@ class Recipe(object):
             log_dir=log_dir,
             log4j2_xml=log4j2_xml,
         ))
+
+        # Create configoverlay.json
+        configoverlay = self.options.get('configoverlay')
+        if configoverlay:
+            for core in self.cores:
+                core_dir = os.path.join(home_dir, core)
+                core_conf_dir = os.path.join(core_dir, 'conf')
+                configoverlay_filename = os.path.join(core_conf_dir, "configoverlay.json")
+                with open(configoverlay_filename, 'wb') as f:
+                    f.write(configoverlay.encode('utf8'))
+                parts.append(configoverlay_filename)
+
         chmod_executable(startup_script)
 
         return parts
