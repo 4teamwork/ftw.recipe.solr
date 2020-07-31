@@ -363,3 +363,60 @@ The solr.xml file contains our whitelisted shards::
       </shardHandlerFactory>
     <BLANKLINE>
     </solr>
+
+
+We can override the solr settings with a configoverlay:
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = solr
+    ... index=https://pypi.python.org/simple/
+    ...
+    ... [solr]
+    ... recipe = ftw.recipe.solr
+    ... url = {server_url}solr-7.2.1.tgz
+    ... md5sum = 95e828f50d34c1b40e3afa8630138664
+    ... configoverlay =
+    ...     {{
+    ...         "initParams": {{
+    ...             "/update/**,/query,/select,/spell": {{
+    ...                 "name":"/update/**,/query,/select,/spell",
+    ...                 "path":"/update/**,/query,/select,/spell",
+    ...                 "defaults": {{
+    ...                     "update.chain":"sync.chain",
+    ...                     "df":"SearchableText"
+    ...                 }}
+    ...             }}
+    ...         }}
+    ...     }}
+    ...
+    ... cores = core1
+    ...
+    ... [versions]
+    ... setuptools = <45.0
+    ... """.format(server_url=server_url))
+
+Running the buildout gives us::
+
+    >>> print system(buildout)
+    Uninstalling solr.
+    Installing solr.
+    Downloading http://test.server/solr-7.2.1.tgz
+    <BLANKLINE>
+
+The configoverlay.json file contains our configuration::
+
+    >>> cat(sample_buildout, 'var', 'solr', 'core1', 'conf', 'configoverlay.json')
+    {
+        "initParams": {
+            "/update/**,/query,/select,/spell": {
+                "name":"/update/**,/query,/select,/spell",
+                "path":"/update/**,/query,/select,/spell",
+                "defaults": {
+                    "update.chain":"sync.chain",
+                    "df":"SearchableText"
+                }
+            }
+        }
+    }

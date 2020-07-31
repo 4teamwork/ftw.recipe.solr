@@ -56,6 +56,10 @@ shards-whitelist
     request parameter. See `Configuring the ShardHandlerFactory
     <https://lucene.apache.org/solr/guide/8_1/distributed-requests.html#configuring-the-shardhandlerfactory>`_
 
+configoverlay
+    Provide a configoverlay as documented in https://lucene.apache.org/solr/guide/8_4/config-api.html.
+    This will override the default config in ``solrconfig.xml``
+
 
 Links
 =====
