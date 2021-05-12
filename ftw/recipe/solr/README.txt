@@ -22,13 +22,13 @@ We'll start by creating a simple buildout that uses our recipe::
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... Jinja2 = <3.0.0
+    ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
 
 Running the buildout gives us::
 
     >>> print system(buildout)
-    Getting distribution for 'jinja2'.
-    Got Jinja2 ...
     Getting distribution for 'zc.recipe.egg>=2.0.6'.
     Got zc.recipe.egg ...
     Installing solr.
@@ -286,6 +286,8 @@ We can provide the Solr configuration from an egg::
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... Jinja2 = <3.0.0
+    ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
 
 Running the buildout gives us::
@@ -324,6 +326,8 @@ We can provide a shards whitelist::
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... Jinja2 = <3.0.0
+    ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
 
 Running the buildout gives us::
@@ -395,6 +399,8 @@ We can override the solr settings with a configoverlay:
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... Jinja2 = <3.0.0
+    ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
 
 Running the buildout gives us::
