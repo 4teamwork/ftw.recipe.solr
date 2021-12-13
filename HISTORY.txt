@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.3.5 (unreleased)
+1.3.5 (2021-12-13)
 ------------------
 
 - Disable message lookups in log4j. Mitigation for CVE-2021-44228.
