@@ -184,7 +184,7 @@ We should also have a startup script::
     -Dsolr.install.dir=$SOLR_INSTALL_DIR \
     -Dsolr.log.dir=/sample-buildout/var/log \
     -Dlog4j2.formatMsgNoLookups=true \
-    -Dlog4j.configuration=/sample-buildout/parts/solr/log4j2.xml)
+    -Dlog4j2.configurationFile=/sample-buildout/parts/solr/log4j2.xml)
     <BLANKLINE>
     start() {
         cd "$SOLR_SERVER_DIR"
