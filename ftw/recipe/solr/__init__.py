@@ -193,8 +193,16 @@ class Recipe(object):
 
     def _copy_from_dir(self, src, dst):
         paths = []
-        for name in os.listdir(src):
-            dst_path = os.path.join(dst, name)
-            copyfile(os.path.join(src, name),  dst_path)
-            paths.append(dst_path)
+        for dirpath, dirnames, filenames in os.walk(src):
+            rel_path = os.path.relpath(dirpath, src)
+            for dirname in dirnames:
+                dst_path = os.path.normpath(os.path.join(dst, rel_path, dirname))
+                if not os.path.exists(dst_path):
+                    os.mkdir(dst_path)
+                paths.append(dst_path)
+            for filename in filenames:
+                dst_path = os.path.normpath(os.path.join(dst, rel_path, filename))
+                src_path = os.path.join(dirpath, filename)
+                copyfile(src_path,  dst_path)
+                paths.append(dst_path)
         return paths

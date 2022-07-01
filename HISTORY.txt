@@ -4,7 +4,8 @@ Changelog
 1.3.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add support for subdirectories in the configuration directory.
+  [buchi]
 
 
 1.3.5 (2021-12-13)
