@@ -64,9 +64,10 @@ The core directory should contain a conf directory and core.properties file::
     d conf
     - core.properties
 
-The conf direcotry should contain a basic set of Solr configuration files::
+The conf directory should contain a basic set of Solr configuration files::
 
     >>> ls(sample_buildout, 'var', 'solr', 'core1', 'conf')
+    d lang
     - managed-schema
     - mapping-FoldToASCII.txt
     - solrconfig.xml
@@ -302,6 +303,7 @@ Running the buildout gives us::
 The conf directory should contain our Solr configuration files::
 
     >>> ls(sample_buildout, 'var', 'solr', 'core1', 'conf')
+    d lang
     - managed-schema
     - mapping-FoldToASCII.txt
     - solrconfig.xml
