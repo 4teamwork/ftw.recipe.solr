@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 
-version = '1.3.7'
+version = '1.3.8.dev0'
 tests_require = ['zope.testing', 'manuel']
 
 setup(
