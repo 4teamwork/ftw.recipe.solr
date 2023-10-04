@@ -168,6 +168,7 @@ We should also have a startup script::
     <BLANKLINE>
     DEFAULT_JVM_OPTS="-Dfile.encoding=UTF-8"
     JVM_OPTS=(${DEFAULT_JVM_OPTS[@]} -Xms512m -Xmx512m -Xss256k)
+    EXTRA_OPTS=()
     <BLANKLINE>
     JAVACMD="java"
     PID_FILE=${PID_FILE:="/sample-buildout/var/solr/solr.pid"}
@@ -186,7 +187,8 @@ We should also have a startup script::
     -Dsolr.install.dir=$SOLR_INSTALL_DIR \
     -Dsolr.log.dir=/sample-buildout/var/log \
     -Dlog4j2.formatMsgNoLookups=true \
-    -Dlog4j2.configurationFile=/sample-buildout/parts/solr/log4j2.xml)
+    -Dlog4j2.configurationFile=/sample-buildout/parts/solr/log4j2.xml \
+    "${EXTRA_OPTS[@]}")
     <BLANKLINE>
     start() {
         cd "$SOLR_SERVER_DIR"

@@ -4,7 +4,8 @@ Changelog
 1.3.8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add support for `extra-opts` (additional options for Solr cmdline).
+  [lgraf]
 
 
 1.3.7 (2022-07-05)

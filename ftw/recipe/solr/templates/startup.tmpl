@@ -2,6 +2,7 @@
 
 DEFAULT_JVM_OPTS="-Dfile.encoding=UTF-8"
 JVM_OPTS=(${DEFAULT_JVM_OPTS[@]} {{ jvm_opts }})
+EXTRA_OPTS=({{ extra_opts }})
 
 JAVACMD="java"
 PID_FILE=${PID_FILE:="{{ pid_file }}"}
@@ -20,7 +21,8 @@ SOLR_START_OPT=('-server' \
 -Dsolr.install.dir=$SOLR_INSTALL_DIR \
 -Dsolr.log.dir={{ log_dir }} \
 -Dlog4j2.formatMsgNoLookups=true \
--Dlog4j2.configurationFile=file:{{ log4j2_xml }})
+-Dlog4j2.configurationFile=file:{{ log4j2_xml }} \
+"${EXTRA_OPTS[@]}")
 
 start() {
     cd "$SOLR_SERVER_DIR"

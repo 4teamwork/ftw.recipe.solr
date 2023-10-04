@@ -143,6 +143,7 @@ class Recipe(object):
             startup_script,
             pid_file=self.options['pid-file'],
             jvm_opts=self.options['jvm-opts'],
+            extra_opts=self.options['extra-opts'],
             solr_port=self.options['port'],
             solr_host=self.options['host'],
             solr_home=home_dir,
