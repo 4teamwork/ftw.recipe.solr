@@ -22,6 +22,7 @@ We'll start by creating a simple buildout that uses our recipe::
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... zc.buildout = 2.13.8
     ... Jinja2 = <3.0.0
     ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
@@ -30,7 +31,7 @@ Running the buildout gives us::
 
     >>> print system(buildout)
     Getting distribution for 'zc.recipe.egg>=2.0.6'.
-    Got zc.recipe.egg ...
+    Got zc.recipe.egg 2.0.7.
     Installing solr.
     Downloading http://test.server/solr-7.2.1.tgz
     WARNING: The easy_install command is deprecated and will be removed in a future version.
@@ -288,6 +289,7 @@ We can provide the Solr configuration from an egg::
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... zc.buildout = 2.13.8
     ... Jinja2 = <3.0.0
     ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
@@ -329,6 +331,7 @@ We can provide a shards whitelist::
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... zc.buildout = 2.13.8
     ... Jinja2 = <3.0.0
     ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
@@ -402,6 +405,7 @@ We can override the solr settings with a configoverlay:
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... zc.buildout = 2.13.8
     ... Jinja2 = <3.0.0
     ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
