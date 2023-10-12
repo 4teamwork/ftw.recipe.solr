@@ -44,6 +44,9 @@ jvm-opts
     Can be used to configure JVM options. Defaults to
     ``-Xms512m -Xmx512m -Xss256k``
 
+extra-opts
+    Extra options to pass to the Solr command line (separated by space). Empty by default.
+
 conf
     Path to a directory containing Solr configuration files.
 

@@ -4,4 +4,5 @@ DEFAULT_OPTIONS = {
     'host': 'localhost',
     'port': '8983',
     'jvm-opts': '-Xms512m -Xmx512m -Xss256k',
+    'extra-opts': '',
 }

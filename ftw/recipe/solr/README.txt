@@ -22,6 +22,7 @@ We'll start by creating a simple buildout that uses our recipe::
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... zc.buildout = 2.13.8
     ... Jinja2 = <3.0.0
     ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
@@ -30,7 +31,7 @@ Running the buildout gives us::
 
     >>> print system(buildout)
     Getting distribution for 'zc.recipe.egg>=2.0.6'.
-    Got zc.recipe.egg ...
+    Got zc.recipe.egg 2.0.7.
     Installing solr.
     Downloading http://test.server/solr-7.2.1.tgz
     WARNING: The easy_install command is deprecated and will be removed in a future version.
@@ -167,6 +168,7 @@ We should also have a startup script::
     <BLANKLINE>
     DEFAULT_JVM_OPTS="-Dfile.encoding=UTF-8"
     JVM_OPTS=(${DEFAULT_JVM_OPTS[@]} -Xms512m -Xmx512m -Xss256k)
+    EXTRA_OPTS=()
     <BLANKLINE>
     JAVACMD="java"
     PID_FILE=${PID_FILE:="/sample-buildout/var/solr/solr.pid"}
@@ -185,7 +187,8 @@ We should also have a startup script::
     -Dsolr.install.dir=$SOLR_INSTALL_DIR \
     -Dsolr.log.dir=/sample-buildout/var/log \
     -Dlog4j2.formatMsgNoLookups=true \
-    -Dlog4j2.configurationFile=/sample-buildout/parts/solr/log4j2.xml)
+    -Dlog4j2.configurationFile=/sample-buildout/parts/solr/log4j2.xml \
+    "${EXTRA_OPTS[@]}")
     <BLANKLINE>
     start() {
         cd "$SOLR_SERVER_DIR"
@@ -288,6 +291,7 @@ We can provide the Solr configuration from an egg::
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... zc.buildout = 2.13.8
     ... Jinja2 = <3.0.0
     ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
@@ -329,6 +333,7 @@ We can provide a shards whitelist::
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... zc.buildout = 2.13.8
     ... Jinja2 = <3.0.0
     ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
@@ -402,6 +407,7 @@ We can override the solr settings with a configoverlay:
     ...
     ... [versions]
     ... setuptools = <45.0
+    ... zc.buildout = 2.13.8
     ... Jinja2 = <3.0.0
     ... MarkupSafe = <2.0.0
     ... """.format(server_url=server_url))
