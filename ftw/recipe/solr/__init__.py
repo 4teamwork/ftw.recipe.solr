@@ -148,6 +148,7 @@ class Recipe(object):
             solr_host=self.options['host'],
             solr_home=home_dir,
             solr_install_dir=destination,
+            enable_remote_streaming=self.options['enable-remote-streaming'],
             log_dir=log_dir,
             log4j2_xml=log4j2_xml,
         ))

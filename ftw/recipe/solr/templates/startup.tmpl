@@ -20,6 +20,7 @@ SOLR_START_OPT=('-server' \
 -Dsolr.solr.home=$SOLR_HOME \
 -Dsolr.install.dir=$SOLR_INSTALL_DIR \
 -Dsolr.log.dir={{ log_dir }} \
+-Dsolr.enableRemoteStreaming={{ enable_remote_streaming }} \
 -Dlog4j2.formatMsgNoLookups=true \
 -Dlog4j2.configurationFile=file:{{ log4j2_xml }} \
 "${EXTRA_OPTS[@]}")

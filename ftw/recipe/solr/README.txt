@@ -186,6 +186,7 @@ We should also have a startup script::
     -Dsolr.solr.home=$SOLR_HOME \
     -Dsolr.install.dir=$SOLR_INSTALL_DIR \
     -Dsolr.log.dir=/sample-buildout/var/log \
+    -Dsolr.enableRemoteStreaming=true \
     -Dlog4j2.formatMsgNoLookups=true \
     -Dlog4j2.configurationFile=/sample-buildout/parts/solr/log4j2.xml \
     "${EXTRA_OPTS[@]}")
